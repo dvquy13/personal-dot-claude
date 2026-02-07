@@ -42,7 +42,8 @@ If no issue number is found, proceed to **Phase 3**.
 
 ## Phase 4: Add Comment
 
-1. **Compose the comment**: Use `$ARGUMENTS` as a hint/seed. Draw from the full conversation context to write a well-structured comment. Choose the best format for the content — headers, code blocks, tables, bullet lists, timelines, etc. No predefined categories; pick whatever structure fits.
-2. **Show draft** to the user for approval.
-3. **Post the comment**: `gh issue comment <number> --body "<body>"`.
-4. Confirm success with the issue URL.
+1. **Read existing context**: Run `gh issue view <number> --json title,body,comments --jq '{title, body, comments: [.comments[] | {author: .author.login, body: .body}]}'` to fetch the issue description and all prior comments. Review this context to avoid repeating information already documented and to ensure the new comment builds on what's there.
+2. **Compose the comment**: Use `$ARGUMENTS` as a hint/seed. Draw from both the full conversation context and the existing issue context (description + comments) to write a well-structured comment that adds new information without duplicating what's already been said. Choose the best format for the content — headers, code blocks, tables, bullet lists, timelines, etc. No predefined categories; pick whatever structure fits.
+3. **Show draft** to the user for approval.
+4. **Post the comment**: `gh issue comment <number> --body "<body>"`.
+5. Confirm success with the issue URL.
