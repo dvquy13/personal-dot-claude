@@ -1,0 +1,10 @@
+# Ignore everything by default
+*
+
+# Track these explicitly
+!.gitignore
+!CLAUDE.md
+!commands/
+!commands/**
+!skills/
+!skills/**
