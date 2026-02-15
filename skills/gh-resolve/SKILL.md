@@ -4,6 +4,8 @@ description: Wrap up the current task — commit, push, and close the GitHub iss
 argument-hint: [#issue-number]
 model: haiku
 allowed-tools: Bash(gh *), Bash(git *), Read, Glob, Grep
+disable-model-invocation: true
+user-invokable: false
 ---
 
 # GitHub Issue Resolve
@@ -52,7 +54,13 @@ Skip this phase if there are no uncommitted changes (both staged and unstaged).
 2. **Post a closing comment**: Brief summary of what was done (reference key commits or changes). Post via `gh issue comment <number> --body "<body>"`.
 3. **Close the issue**: `gh issue close <number>`.
 
-## Phase 6: Cleanup
+## Phase 6: Merge & Cleanup
 
-1. **Remove marker file**: Delete `.gh-issue` from the repo root if it exists.
-2. **Branch suggestion**: If on a feature branch (not `main` or `master`), suggest merging or creating a PR to the default branch.
+1. **Determine default branch**: `git remote show origin | grep 'HEAD branch' | awk '{print $NF}'`.
+2. **Record feature branch name**: Save the current branch name. If already on the default branch, skip to step 8.
+3. **Check out default branch**: `git checkout <default-branch> && git pull`.
+4. **Count commits on feature branch**: `git rev-list --count <default-branch>..<feature-branch>`. If only one commit, use `git merge <feature-branch>`. Otherwise use `git merge --squash <feature-branch>`.
+5. **Compose a merge commit message** summarizing the work done (for squash merges). Commit and push.
+6. **Delete local branch**: `git branch -d <feature-branch>`.
+7. **Delete remote branch**: `git push origin --delete <feature-branch>`.
+8. **Remove marker file**: Delete `.gh-issue` from the repo root if it exists.

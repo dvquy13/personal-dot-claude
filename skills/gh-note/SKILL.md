@@ -2,8 +2,10 @@
 name: gh-note
 description: Document work via GitHub issues. Auto-creates an issue if none exists, otherwise adds a comment. Use when the user invokes "/gh-note", asks to "document this on GitHub", "create a GitHub issue", "add a note to the issue", or "log this finding".
 argument-hint: [message or path/to/plan.md]
-model: haiku
+model: sonnet
 allowed-tools: Bash(gh *), Bash(git *), Read, Glob, Grep
+disable-model-invocation: true
+user-invokable: false
 ---
 
 # GitHub Issue Note
@@ -47,3 +49,20 @@ If no issue number is found, proceed to **Phase 3**.
 3. **Show draft** to the user for approval.
 4. **Post the comment**: `gh issue comment <number> --body "<body>"`.
 5. Confirm success with the issue URL.
+
+## Phase 5: Branch, Commit & Push
+
+1. **Check working tree**: Run `git status` — if the working tree is clean (no staged or unstaged changes), skip this phase entirely.
+2. **Check current branch** via `git branch --show-current`:
+   - If on `main` or `master`: create a new branch named `<issue-number>-<slug>` where `<slug>` is derived from the issue title (lowercase, spaces → hyphens, strip special chars, truncate to ~50 chars). Switch to it with `git checkout -b <branch-name>`.
+   - If already on a feature branch: stay on it.
+3. **Stage relevant files** (prefer specific files over `git add -A`).
+4. **Compose a commit message** summarizing the changes, IMPORTANT: referencing the issue number `#N` in the body.
+5. **Show proposed commit** (message + file list) to the user for approval.
+6. **Commit** with Co-Authored-By trailer.
+7. **Push**: `git push -u origin <branch>`.
+
+### Phase 6: Refactor context in local text plan
+
+1. Since now you have the details commited in the issue and as code, you can review the plan to refactor it so that the context is more clean.
+2. For example, you should remove all the planned details, and insert links to the issue and commit instead.
