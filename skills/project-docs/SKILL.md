@@ -38,21 +38,22 @@ Maintain project knowledge across three targets, each with a distinct audience a
 ## Phase 2A: Full Audit
 
 1. Map the codebase: `ls` root and key dirs, read config files (`package.json`, `Cargo.toml`, etc.), identify entry points and test structure.
-2. Draft content for each target per the formats below.
-3. Show draft for approval before writing.
+2. Write content directly to each target per the formats below. Create `docs/` or `.claude/rules/` dirs if needed.
+3. Summarize what was written and where so the user can review via `git diff`.
 
 ## Phase 2B: Session Distill
 
 1. Review conversation for: decisions + rationale, bugs + root causes, architectural insights, conventions discovered, gotchas, environment quirks, and other things user was confused with.
 2. Read existing docs (all three targets).
 3. For each finding, determine placement using the Placement Scope rules.
-4. Show proposed changes for approval — grouped by target.
+4. Write changes directly to the appropriate targets. Add code comments for function/line-specific findings.
+5. Summarize what changed and where so the user can review via `git diff`.
 
-## Phase 3: Write
+## Write Rules
 
-1. Write to the appropriate targets. Create `docs/` or `.claude/rules/` dirs if needed.
-2. Add code comments for function/line-specific findings.
-3. Never duplicate information across targets. Each fact lives in exactly one place.
+- Create `docs/` or `.claude/rules/` dirs if needed.
+- Never duplicate information across targets. Each fact lives in exactly one place.
+- Write directly — do not ask for approval. The user will review changes via source control.
 
 ## Placement Scope
 
