@@ -6,7 +6,6 @@ description: >
   to the right target. Use when user says "update docs", "document the project",
   "distill session", "capture learnings", or asks to record architecture,
   decisions, conventions, or gotchas.
-model: sonnet
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git *), Bash(ls *)
 ---
 
