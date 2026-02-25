@@ -43,6 +43,7 @@ Maintain project knowledge across three targets, each with a distinct audience a
 ## Phase 2B: Session Distill
 
 1. Review conversation for: decisions + rationale, bugs + root causes, architectural insights, conventions discovered, gotchas, environment quirks, and other things user was confused with.
+   **Only include what was verified or completed this session.** Skip anything discussed as a future plan, proposed design, or approach not yet taken.
 2. Read existing docs (all three targets).
 3. For each finding, determine placement using the Placement Scope rules.
 4. Write changes directly to the appropriate targets. Add code comments for function/line-specific findings.
@@ -51,7 +52,6 @@ Maintain project knowledge across three targets, each with a distinct audience a
 ## Write Rules
 
 - Create `docs/` or `.claude/rules/` dirs if needed.
-- Never duplicate information across targets. Each fact lives in exactly one place.
 - Write directly — do not ask for approval. The user will review changes via source control.
 
 ## Placement Scope
@@ -132,6 +132,7 @@ Route each finding to where it will be discovered at the right time:
 
 ## Conciseness Rules (all targets)
 
+- **One place only.** Each fact lives in exactly one target. If it fits as a code comment, don't also add it to CLAUDE.md.
 - One line per entry. Expand only if genuinely complex.
 - File paths as references, not prose: `see src/auth/` not "the authentication module."
 - Skip the obvious. Don't document what code says clearly.
@@ -149,6 +150,7 @@ When `docs/ARCHITECTURE.md` exceeds ~300 lines:
 
 ## Anti-Patterns
 
+- Do NOT document planned, proposed, or not-yet-implemented work — only capture facts verified this session.
 - Do NOT duplicate across targets. Each fact in exactly one place.
 - Do NOT duplicate README content. Reference it.
 - Do NOT document external library APIs. Link to their docs.
