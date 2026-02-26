@@ -1,7 +1,7 @@
 ---
 name: project-docs
 description: >
-  Maintain project documentation across docs/ARCHITECTURE.md, CLAUDE.md, and
+  Maintain project documentation across docs/, CLAUDE.md or .claude/CLAUDE.md, and
   .claude/rules/. Distill conversations into concise, actionable insights routed
   to the right target. Use when user says "update docs", "document the project",
   "distill session", "capture learnings", "forget X", or asks to record/remove
@@ -11,16 +11,23 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git *), Bash(ls *)
 
 # Project Docs
 
-Maintain project knowledge across three targets, each with a distinct audience and purpose.
+Curate project knowledge into structured, in-repo documentation for both humans and AI. This is the **promotion layer** on top of auto-memory: auto-memory captures automatically into private `~/.claude/` files; this skill routes verified insights into in-repo files that are **portable**, **inspectable**, and serve both future developers (including future-you) and Claude in future sessions.
+
+## Relationship with Auto-Memory
+
+- **Auto-memory** = Claude's automatic scratch pad. Freeform, per-user, per-machine. Topic files loaded on-demand only.
+- **Project docs** = Shared project knowledge. In-repo, travels with the repo, readable by humans and AI alike.
+- During distill, check auto-memory as an additional source — promote anything worth making permanent and shared.
+- Do NOT duplicate what auto-memory already captured unless it belongs in project-level documentation.
 
 ## Documentation Targets
 
-| Target | Audience | Purpose | Style |
+| Target | Loaded by Claude | Purpose | Style |
 |---|---|---|---|
-| `docs/ARCHITECTURE.md` | Humans + AI | Project structure, architecture, data flow, key concepts | Descriptive, scannable |
-| `CLAUDE.md` (project root) | AI (Claude) | Conventions, commands, patterns, project-wide gotchas | Imperative, terse instructions |
-| `.claude/rules/*.md` | AI (Claude) | Path-specific rules activated by file context | Imperative, scoped |
-| Code comments | Humans + AI | Line/function-specific gotchas | `// GOTCHA:` or `// NOTE:` inline |
+| `docs/*.md` | On-demand | Project map: starts as `ARCHITECTURE.md`, splits into topic files when it grows | Descriptive, scannable |
+| `CLAUDE.md` (project root) | **Always, session start** | Conventions, commands, patterns, project-wide gotchas | Imperative, terse instructions |
+| `.claude/rules/*.md` | **When matching files are touched** (no `paths` frontmatter = always) | Path-specific rules activated by file context | Imperative, scoped |
+| Code comments | When file is read | Line/function-specific gotchas | Inline comments |
 
 ## Mode Detection
 
@@ -32,7 +39,8 @@ Maintain project knowledge across three targets, each with a distinct audience a
 1. Read `docs/ARCHITECTURE.md` if it exists. Check for topic files in `docs/`.
 2. Read project-root `CLAUDE.md` if it exists.
 3. List `.claude/rules/` and read existing rule files.
-4. Note what exists and what's missing.
+4. Scan auto-memory for insights worth promoting to project docs.
+5. Note what exists and what's missing.
 
 ## Phase 2A: Full Audit
 
@@ -72,35 +80,38 @@ When user says "forget X", "remove X from docs", or "stop documenting X":
 
 ## Placement Scope
 
-Route each finding to where it will be discovered at the right time:
+Route each finding based on **when it needs to be discovered** and **how critical it is to load every session**:
 
-**`docs/ARCHITECTURE.md`** when:
-- Project structure, directory layout, what lives where
-- Key concepts and domain terminology
-- Entry points and data flow
-- Architectural decisions and rationale ("why we chose X over Y")
-- Dependencies and what they're for
-
-**`CLAUDE.md`** when:
+**`CLAUDE.md`** (always loaded, every session) when:
 - Build, test, lint, deploy commands
 - Coding conventions (naming, patterns, style)
-- Project-wide gotchas that affect how AI should write code
+- Project-wide gotchas that affect how code should be written
 - Workflow rules ("always run X before Y", "never do Z")
-- Important constraints AI must follow
+- Important constraints that must be known from session start
+- This is the most valuable real estate — keep it high-signal
 
-**`.claude/rules/<topic>.md`** when:
+**`.claude/rules/<topic>.md`** (loaded when matching files are touched) when:
 - Rules specific to a directory or file pattern
 - "When editing files in `src/api/`, always..."
 - Test conventions for a specific test directory
 - Component patterns for a specific framework area
 
-**Code comment** when:
+**`docs/ARCHITECTURE.md`** (loaded on-demand) when:
+- Project structure, directory layout, what lives where
+- Key concepts and domain terminology
+- Entry points and data flow
+- Architectural decisions and rationale ("why we chose X over Y")
+- Dependencies and what they're for
+- Reference material — important but not needed every session
+
+**Code comment** (loaded when file is read) when:
 - Specific to one function or code block
 - Explains non-obvious local behavior
 - A developer reading that code would hit this issue
-- Format: `// GOTCHA: ...` or `// NOTE: ...` near the relevant line
 
 **When in doubt:** code comments > rules > CLAUDE.md > ARCHITECTURE.md (prefer the most specific, contextual location).
+
+**Promotion test:** if something is in auto-memory or ARCHITECTURE.md but you find yourself needing it at session start, promote it to CLAUDE.md or rules.
 
 ## Format: docs/ARCHITECTURE.md
 
