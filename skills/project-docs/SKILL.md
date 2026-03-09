@@ -46,21 +46,27 @@ Route verified project insights into in-repo documentation that's **portable**, 
    **Non-obvious filter**: after identifying each finding, ask "would a new developer hit this as a surprise?" — if no, skip it.
    **Only include what was verified or completed this session.** Skip anything discussed as a future plan, proposed design, or approach not yet taken.
 2. Read existing docs (all targets).
-3. For each finding:
-   a. **Cross-reference** against existing docs — does a related entry already exist?
-   b. If yes, **update the existing entry** in place. Do not add a second entry.
-   c. If the finding contradicts an existing entry, **replace** the old one (it's now stale).
-   d. If genuinely new, determine placement using the Placement Scope rules.
-4. **Prune stale entries**: flag and remove any existing entries that this session proved wrong or outdated.
-5. **Merge into existing sections** — organize semantically by topic, not chronologically.
-6. Write directly to the appropriate targets. Create `docs/` or `.claude/rules/` dirs if needed. Add code comments for function/line-specific findings.
-7. Summarize what changed and where (additions, updates, removals) so the user can review via `git diff`.
+
+## Phase 3: Plan + Dedup
+
+Before writing, list every intended change (ADD/UPDATE/REMOVE per target). Then scan the full list:
+- Same fact in multiple targets → keep only the most specific, drop the rest
+- Near-duplicates within a target → merge into one
+- Contradictions → resolve
+
+Only proceed to Phase 4 with the deduplicated plan.
+
+## Phase 4: Execute
+
+1. Apply the finalized plan — write, edit, or remove entries across all targets. Create `docs/` or `.claude/rules/` dirs if needed.
+2. **Merge into existing sections** — organize semantically by topic, not chronologically.
+3. Summarize what changed and where (additions, updates, removals) so the user can review via `git diff`.
 
 ## Placement Scope
 
 Route each finding based on **when it needs to be discovered**. Only capture what isn't self-evident from reading the code or README — every entry should answer "why" or "gotcha", not "what".
 
-**`CLAUDE.md`** (always loaded) — build/test/lint/deploy commands; coding conventions; project-wide gotchas; workflow rules ("always run X before Y", "never do Z"); important constraints needed from session start. Keep high-signal, under ~50 lines.
+**`CLAUDE.md`** (always loaded) — build/test/lint/deploy commands; coding conventions; project-wide gotchas; workflow rules ("always run X before Y", "never do Z"); important constraints needed from session start. **Treat as valuable real estate: every line competes for Claude's attention at session start. Be ruthless — if it can live in inline comments, rules or other docs, put it there instead. Keep under ~50 lines.**
 
 **`.claude/rules/<topic>.md`** — rules specific to a directory or file pattern; test conventions; component patterns for a specific framework area. Need paths frontmatter to trigger on relevant files.
 
