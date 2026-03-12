@@ -49,10 +49,15 @@ Route verified project insights into in-repo documentation that's **portable**, 
 
 ## Phase 3: Plan + Dedup
 
-Before writing, list every intended change (ADD/UPDATE/REMOVE per target). Then scan the full list:
-- Same fact in multiple targets → keep only the most specific, drop the rest
-- Near-duplicates within a target → merge into one
-- Contradictions → resolve
+For each finding from Phase 2, assign it to **exactly one target** using the Placement Scope rules.
+Write the plan as: `[FINDING] → [TARGET] (ADD/UPDATE/REMOVE)`
+
+**Constraint**: each finding appears in the plan exactly once. If a finding seems to belong in multiple places, pick the most specific target only (code comment > rules > CLAUDE.md > ARCHITECTURE.md).
+
+Before proceeding, scan the plan for:
+- Same fact assigned to multiple targets → remove all but the most specific
+- Near-duplicates within a target → merge into one entry
+- Contradictions with existing docs → resolve
 
 Only proceed to Phase 4 with the deduplicated plan.
 
