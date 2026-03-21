@@ -3,6 +3,24 @@
 # Read JSON input from stdin
 input=$(cat)
 
+# ANSI color codes
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+RESET='\033[0m'
+
+# Color a percentage value: yellow >= 60%, red >= 85%
+color_pct() {
+    local pct=$1
+    local text=$2
+    if [ "$pct" -ge 85 ]; then
+        printf "${RED}%s${RESET}" "$text"
+    elif [ "$pct" -ge 60 ]; then
+        printf "${YELLOW}%s${RESET}" "$text"
+    else
+        printf "%s" "$text"
+    fi
+}
+
 # Extract relevant fields
 model_name=$(echo "$input" | jq -r '.model.display_name // .model.id')
 current_dir=$(echo "$input" | jq -r '.workspace.current_dir // .cwd')
@@ -18,7 +36,7 @@ if [ "$usage" != "null" ]; then
     current=$(echo "$usage" | jq '.input_tokens + .cache_creation_input_tokens + .cache_read_input_tokens')
     size=$(echo "$input" | jq '.context_window.context_window_size')
     pct=$((current * 100 / size))
-    context_info=$(printf " [%d%%]" "$pct")
+    context_info=" [$(color_pct "$pct" "${pct}%")]"
 else
     context_info=""
 fi
@@ -29,8 +47,14 @@ seven_pct=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // emp
 rate_info=""
 if [ -n "$five_pct" ] || [ -n "$seven_pct" ]; then
     rate_parts=""
-    [ -n "$five_pct" ] && rate_parts=$(printf "5h:%.0f%%" "$five_pct")
-    [ -n "$seven_pct" ] && rate_parts="$rate_parts${rate_parts:+ }$(printf "7d:%.0f%%" "$seven_pct")"
+    if [ -n "$five_pct" ]; then
+        five_int=$(printf "%.0f" "$five_pct")
+        rate_parts="5h:$(color_pct "$five_int" "${five_int}%")"
+    fi
+    if [ -n "$seven_pct" ]; then
+        seven_int=$(printf "%.0f" "$seven_pct")
+        rate_parts="${rate_parts}${rate_parts:+ }7d:$(color_pct "$seven_int" "${seven_int}%")"
+    fi
     rate_info=" | $rate_parts"
 fi
 
