@@ -40,12 +40,20 @@ BAR=""
 
 COST_FMT=$(printf '$%.2f' "$COST")
 
-# Format reset countdown for 5h window: always minutes (e.g. "142m")
+# Format reset countdown for 5h window: "Xd Ym" or "Ym" if < 1d
 fmt_reset_5h() {
     local resets_at=$1 now secs_left
     now=$(date +%s)
     secs_left=$((resets_at - now))
-    [ "$secs_left" -le 0 ] && echo "now" || echo "$((secs_left / 60))m"
+    if [ "$secs_left" -le 0 ]; then
+        echo "now"
+    elif [ "$secs_left" -lt 86400 ]; then
+        echo "$((secs_left / 60))m"
+    else
+        local d=$((secs_left / 86400))
+        local m=$(( (secs_left % 86400) / 60 ))
+        [ "$m" -gt 0 ] && echo "${d}d ${m}m" || echo "${d}d"
+    fi
 }
 
 # Format reset countdown for 7d window: "Xd Yh" or "Yh" if < 1d
@@ -85,16 +93,21 @@ if [ -n "$FIVE_PCT" ] || [ -n "$SEVEN_PCT" ]; then
         F=$(printf "%.0f" "$FIVE_PCT")
         RESET_STR=""
         [ -n "$FIVE_RESET" ] && RESET_STR="${DIM}↺ $(fmt_reset_5h "$FIVE_RESET")${RESET}"
-        RATE_PARTS="5h:$(color_pct "$F" "${F}%")${RESET_STR:+ $RESET_STR}"
+        RATE_PARTS="5h: $(color_pct "$F" "${F}%")${RESET_STR:+ $RESET_STR}"
     fi
     if [ -n "$SEVEN_PCT" ]; then
         S=$(printf "%.0f" "$SEVEN_PCT")
         RESET_STR=""
         [ -n "$SEVEN_RESET" ] && RESET_STR="${DIM}↺ $(fmt_reset_7d "$SEVEN_RESET")${RESET}"
-        RATE_PARTS="${RATE_PARTS}${RATE_PARTS:+  }7d:$(color_pct "$S" "${S}%")${RESET_STR:+ $RESET_STR}"
+        RATE_PARTS="${RATE_PARTS}${RATE_PARTS:+ | }7d: $(color_pct "$S" "${S}%")${RESET_STR:+ $RESET_STR}"
     fi
     RATE_INFO=" | $RATE_PARTS"
 fi
 
-printf "${BAR_COLOR}%s${RESET} %s%% | ${YELLOW}%s${RESET}%b\n" \
-    "$BAR" "$PCT" "$COST_FMT" "$RATE_INFO"
+printf "${BAR_COLOR}%s${RESET} %s%% | ${YELLOW}%s${RESET}\n" \
+    "$BAR" "$PCT" "$COST_FMT"
+
+# Line 3: rate limits (only shown when present)
+if [ -n "$RATE_PARTS" ]; then
+    printf "%b\n" "$RATE_PARTS"
+fi
