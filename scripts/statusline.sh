@@ -47,12 +47,12 @@ fmt_reset_5h() {
     secs_left=$((resets_at - now))
     if [ "$secs_left" -le 0 ]; then
         echo "now"
-    elif [ "$secs_left" -lt 86400 ]; then
+    elif [ "$secs_left" -lt 3600 ]; then
         echo "$((secs_left / 60))m"
     else
-        local d=$((secs_left / 86400))
-        local m=$(( (secs_left % 86400) / 60 ))
-        [ "$m" -gt 0 ] && echo "${d}d ${m}m" || echo "${d}d"
+        local h=$((secs_left / 3600))
+        local m=$(( (secs_left % 3600) / 60 ))
+        [ "$m" -gt 0 ] && echo "${h}h ${m}m" || echo "${h}h"
     fi
 }
 
