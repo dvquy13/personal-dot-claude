@@ -40,7 +40,7 @@ BAR=""
 
 COST_FMT=$(printf '$%.2f' "$COST")
 
-# Format reset countdown for 5h window: "Xd Ym" or "Ym" if < 1d
+# Format reset countdown for 5h window: "Xh Ym" or "Ym" if < 1h
 fmt_reset_5h() {
     local resets_at=$1 now secs_left
     now=$(date +%s)
@@ -80,6 +80,33 @@ color_pct() {
     else printf "%s" "$text"; fi
 }
 
+# Color reset duration by run rate: ratio of used% to elapsed time%.
+# run_rate = used_pct / elapsed_pct  (>1 means consuming faster than time passing)
+# green <= 1.0, yellow > 1.0 (over-running), red > 1.5 (greatly over-running)
+color_reset_by_run_rate() {
+    local used_pct=$1 resets_at=$2 window_secs=$3 text=$4
+    local now elapsed_secs elapsed_pct run_rate_x100
+    now=$(date +%s)
+    elapsed_secs=$((window_secs - (resets_at - now)))
+    if [ "$elapsed_secs" -le 0 ]; then
+        # Window just started, no run rate yet
+        printf "${DIM}%s${RESET}" "$text"
+        return
+    fi
+    # elapsed_pct = elapsed_secs / window_secs * 100 (integer, avoid division by zero)
+    elapsed_pct=$(( elapsed_secs * 100 / window_secs ))
+    [ "$elapsed_pct" -le 0 ] && elapsed_pct=1
+    # run_rate * 100 = used_pct * 100 / elapsed_pct
+    run_rate_x100=$(( used_pct * 100 / elapsed_pct ))
+    if [ "$run_rate_x100" -ge 150 ]; then
+        printf "${RED}%s${RESET}" "$text"
+    elif [ "$run_rate_x100" -ge 100 ]; then
+        printf "${YELLOW}%s${RESET}" "$text"
+    else
+        printf "${DIM}%s${RESET}" "$text"
+    fi
+}
+
 # Rate limits (Claude.ai Pro/Max only)
 FIVE_PCT=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
 FIVE_RESET=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
@@ -92,13 +119,19 @@ if [ -n "$FIVE_PCT" ] || [ -n "$SEVEN_PCT" ]; then
     if [ -n "$FIVE_PCT" ]; then
         F=$(printf "%.0f" "$FIVE_PCT")
         RESET_STR=""
-        [ -n "$FIVE_RESET" ] && RESET_STR="${DIM}↺ $(fmt_reset_5h "$FIVE_RESET")${RESET}"
+        if [ -n "$FIVE_RESET" ]; then
+            RESET_LABEL=$(fmt_reset_5h "$FIVE_RESET")
+            RESET_STR="$(color_reset_by_run_rate "$F" "$FIVE_RESET" 18000 "↺ ${RESET_LABEL}")"
+        fi
         RATE_PARTS="5h: $(color_pct "$F" "${F}%")${RESET_STR:+ $RESET_STR}"
     fi
     if [ -n "$SEVEN_PCT" ]; then
         S=$(printf "%.0f" "$SEVEN_PCT")
         RESET_STR=""
-        [ -n "$SEVEN_RESET" ] && RESET_STR="${DIM}↺ $(fmt_reset_7d "$SEVEN_RESET")${RESET}"
+        if [ -n "$SEVEN_RESET" ]; then
+            RESET_LABEL=$(fmt_reset_7d "$SEVEN_RESET")
+            RESET_STR="$(color_reset_by_run_rate "$S" "$SEVEN_RESET" 604800 "↺ ${RESET_LABEL}")"
+        fi
         RATE_PARTS="${RATE_PARTS}${RATE_PARTS:+ | }7d: $(color_pct "$S" "${S}%")${RESET_STR:+ $RESET_STR}"
     fi
     RATE_INFO=" | $RATE_PARTS"
