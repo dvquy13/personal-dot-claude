@@ -54,7 +54,8 @@ This model serves CRAP directly:
 
 ## Typography
 
-- Use a geometric sans-serif for UI chrome: labels, numbers, nav, buttons, headings. Example: Google Sans, Inter.
+- **Default font for UI chrome** (labels, numbers, nav, buttons, headings): **Google Sans** (available via Google Fonts). Fall back to Inter only if Google Sans is explicitly unavailable.
+- If the user specifies a font, use it exactly. Do not substitute silently — if unsure about availability, ask rather than guess.
 - Use a humanist or rounded sans-serif for prose reading zones: long-form text, summaries, user-generated content. Example: DM Sans, Inter (from rsms.me/inter).
 - Use monospace only for machine-scannable content: IDs, code, timestamps in data rows. Example: Google Sans Code, Roboto Mono.
 - Define a single type scale as tokens. Never write raw pixel values — resize the entire UI by editing the scale, not by hunting down individual declarations.
@@ -79,6 +80,18 @@ Keep motion purposeful and brief. Transitions communicate state change — they 
 - Infinite animations (spinners, pulse dots): slow and calm, never frantic.
 - No transitions on structural layout properties (width, height of containers).
 - No shadows to animate. No bouncing. No attention-seeking.
+
+---
+
+## Token-Based Implementation
+
+When implementing a design in HTML/CSS/JS, all design values must be defined once and referenced everywhere — never scattered as raw literals:
+
+- **CSS custom properties** for all colors, border radii, and spacing variants. Define on `:root`, reference as `var(--name)`. Change one value, everything updates.
+- **JS token object** (e.g. `const T = {}`) for any design values consumed in JavaScript (chart colors, canvas draws). Populate by reading CSS vars at runtime: `getComputedStyle(document.documentElement).getPropertyValue('--accent')`. This keeps CSS and JS in sync from a single source.
+- **Tailwind config `extend`** if using Tailwind: wire theme colors to CSS vars so utility classes and custom CSS share the same token.
+
+If you find yourself writing the same hex value twice, stop and define it as a token first.
 
 ---
 
