@@ -29,14 +29,15 @@ fi
 printf "${CYAN}[%s]${RESET} 📁 %s%b\n" "$MODEL" "${DIR##*/}" "$BRANCH"
 
 # Line 2: color-coded progress bar, context %, cost, rate limits with resets_at
-if [ "$PCT" -ge 90 ]; then BAR_COLOR="$RED"
-elif [ "$PCT" -ge 70 ]; then BAR_COLOR="$YELLOW"
+if [ "$PCT" -ge 80 ]; then BAR_COLOR="$RED"
+elif [ "$PCT" -ge 50 ]; then BAR_COLOR="$YELLOW"
 else BAR_COLOR="$GREEN"; fi
 
-FILLED=$((PCT / 10)); EMPTY=$((10 - FILLED))
+BAR_WIDTH=12
+FILLED=$((PCT * BAR_WIDTH / 100)); EMPTY=$((BAR_WIDTH - FILLED))
 BAR=""
-[ "$FILLED" -gt 0 ] && printf -v FILL "%${FILLED}s" && BAR="${FILL// /█}"
-[ "$EMPTY" -gt 0 ] && printf -v PAD "%${EMPTY}s" && BAR="${BAR}${PAD// /░}"
+for ((i=0; i<FILLED; i++)); do BAR+="━"; done
+for ((i=0; i<EMPTY; i++)); do BAR+="╌"; done
 
 COST_FMT=$(printf '$%.2f' "$COST")
 

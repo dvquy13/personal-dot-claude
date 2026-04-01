@@ -36,7 +36,21 @@ if [ "$usage" != "null" ]; then
     current=$(echo "$usage" | jq '.input_tokens + .cache_creation_input_tokens + .cache_read_input_tokens')
     size=$(echo "$input" | jq '.context_window.context_window_size')
     pct=$((current * 100 / size))
-    context_info=" [$(color_pct "$pct" "${pct}%")]"
+    # Build progress bar
+    BAR_WIDTH=12
+    filled=$((pct * BAR_WIDTH / 100))
+    empty=$((BAR_WIDTH - filled))
+    if (( pct >= 80 )); then
+        bar_color=$'\033[31m'
+    elif (( pct >= 50 )); then
+        bar_color=$'\033[33m'
+    else
+        bar_color=$'\033[32m'
+    fi
+    bar=""
+    for ((i=0; i<filled; i++)); do bar+="━"; done
+    for ((i=0; i<empty; i++)); do bar+="╌"; done
+    context_info=" ${bar_color}${bar}${RESET} ${bar_color}${pct}%${RESET}"
 else
     context_info=""
 fi
