@@ -29,7 +29,7 @@ fi
 printf "${CYAN}[%s]${RESET} 📁 %s%b\n" "$MODEL" "${DIR##*/}" "$BRANCH"
 
 # Line 2: color-coded progress bar, context %, cost, rate limits with resets_at
-if [ "$PCT" -ge 80 ]; then BAR_COLOR="$RED"
+if [ "$PCT" -ge 70 ]; then BAR_COLOR="$RED"
 elif [ "$PCT" -ge 50 ]; then BAR_COLOR="$YELLOW"
 else BAR_COLOR="$GREEN"; fi
 
@@ -138,7 +138,7 @@ if [ -n "$FIVE_PCT" ] || [ -n "$SEVEN_PCT" ]; then
     RATE_INFO=" | $RATE_PARTS"
 fi
 
-printf "${BAR_COLOR}%s${RESET} %s%% | ${YELLOW}%s${RESET}\n" \
+printf "${BAR_COLOR}%s${RESET} ${BAR_COLOR}%s%%${RESET} | ${YELLOW}%s${RESET}\n" \
     "$BAR" "$PCT" "$COST_FMT"
 
 # Line 3: rate limits (only shown when present)
