@@ -23,7 +23,7 @@ if git rev-parse --git-dir > /dev/null 2>&1; then
         GIT_PARTS=""
         [ "$STAGED" -gt 0 ] && GIT_PARTS="${GREEN}+${STAGED}${RESET}"
         [ "$MODIFIED" -gt 0 ] && GIT_PARTS="${GIT_PARTS}${YELLOW}~${MODIFIED}${RESET}"
-        BRANCH=" | 🌿 ${BRANCH_NAME}${GIT_PARTS:+ $GIT_PARTS}"
+        BRANCH=" · 🌿 ${BRANCH_NAME}${GIT_PARTS:+ $GIT_PARTS}"
     fi
 fi
 printf "${CYAN}[%s]${RESET} 📁 %s%b\n" "$MODEL" "${DIR##*/}" "$BRANCH"
@@ -81,6 +81,17 @@ color_pct() {
     else printf "%s" "$text"; fi
 }
 
+# Build a 4-char mini bar colored by percentage (same thresholds as color_pct)
+build_mini_bar() {
+    local pct=$1
+    local filled=$((pct * 4 / 100)) empty=$((4 - pct * 4 / 100)) bar=""
+    for ((i=0; i<filled; i++)); do bar+="━"; done
+    for ((i=0; i<empty; i++)); do bar+="╌"; done
+    if [ "$pct" -ge 85 ]; then printf "${RED}%s${RESET}" "$bar"
+    elif [ "$pct" -ge 60 ]; then printf "${YELLOW}%s${RESET}" "$bar"
+    else printf "%s" "$bar"; fi
+}
+
 # Color reset duration by run rate: ratio of used% to elapsed time%.
 # run_rate = used_pct / elapsed_pct  (>1 means consuming faster than time passing)
 # green <= 1.0, yellow > 1.0 (over-running), red > 1.5 (greatly over-running)
@@ -119,26 +130,28 @@ if [ -n "$FIVE_PCT" ] || [ -n "$SEVEN_PCT" ]; then
     RATE_PARTS=""
     if [ -n "$FIVE_PCT" ]; then
         F=$(printf "%.0f" "$FIVE_PCT")
+        FIVE_BAR=$(build_mini_bar "$F")
         RESET_STR=""
         if [ -n "$FIVE_RESET" ]; then
-            RESET_LABEL=$(fmt_reset_5h "$FIVE_RESET")
+            RESET_LABEL=$(printf "%-6s" "$(fmt_reset_5h "$FIVE_RESET")")
             RESET_STR="$(color_reset_by_run_rate "$F" "$FIVE_RESET" 18000 "↺ ${RESET_LABEL}")"
         fi
-        RATE_PARTS="5h: $(color_pct "$F" "${F}%")${RESET_STR:+ $RESET_STR}"
+        RATE_PARTS="5h: ${FIVE_BAR} $(color_pct "$F" "$(printf "%3d%%" "$F")")${RESET_STR:+ $RESET_STR}"
     fi
     if [ -n "$SEVEN_PCT" ]; then
         S=$(printf "%.0f" "$SEVEN_PCT")
+        SEVEN_BAR=$(build_mini_bar "$S")
         RESET_STR=""
         if [ -n "$SEVEN_RESET" ]; then
-            RESET_LABEL=$(fmt_reset_7d "$SEVEN_RESET")
+            RESET_LABEL=$(printf "%-6s" "$(fmt_reset_7d "$SEVEN_RESET")")
             RESET_STR="$(color_reset_by_run_rate "$S" "$SEVEN_RESET" 604800 "↺ ${RESET_LABEL}")"
         fi
-        RATE_PARTS="${RATE_PARTS}${RATE_PARTS:+ | }7d: $(color_pct "$S" "${S}%")${RESET_STR:+ $RESET_STR}"
+        RATE_PARTS="${RATE_PARTS}${RATE_PARTS:+ · }7d: ${SEVEN_BAR} $(color_pct "$S" "$(printf "%3d%%" "$S")")${RESET_STR:+ $RESET_STR}"
     fi
-    RATE_INFO=" | $RATE_PARTS"
+    RATE_INFO=" · $RATE_PARTS"
 fi
 
-printf "${BAR_COLOR}%s${RESET} ${BAR_COLOR}%s%%${RESET} | ${YELLOW}%s${RESET}\n" \
+printf "Ctx ${BAR_COLOR}%s${RESET} ${BAR_COLOR}%4d%%${RESET} · ${YELLOW}%s${RESET}\n" \
     "$BAR" "$PCT" "$COST_FMT"
 
 # Line 3: rate limits (only shown when present)
