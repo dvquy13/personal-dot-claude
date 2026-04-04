@@ -1,0 +1,13 @@
+{
+  "data": [],
+  "meta": {
+    "page": {
+      "currentPage": 1,
+      "from": null,
+      "lastPage": 1,
+      "perPage": 10,
+      "to": null,
+      "total": 42
+    }
+  }
+}

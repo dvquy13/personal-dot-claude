@@ -1,0 +1,20 @@
+{
+  "name": "lemon_revenue",
+  "description": "All-time revenue from LemonSqueezy API",
+  "auth": {
+    "type": "api_key",
+    "env": "LEMONSQUEEZY_API_KEY",
+    "format": "bearer",
+    "setup": "Generate at app.lemonsqueezy.com → Settings → API → New API key"
+  },
+  "request": {
+    "url": "https://api.lemonsqueezy.com/v1/stores",
+    "method": "GET"
+  },
+  "extract": {
+    "type": "jsonpath",
+    "path": "data.0.attributes.total_revenue",
+    "cast": "money_cents"
+  },
+  "validate": { "min": 0, "max": 10000000 }
+}

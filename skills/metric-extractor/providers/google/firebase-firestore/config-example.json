@@ -1,0 +1,28 @@
+{
+  "name": "firebase_users",
+  "description": "Total registered users in Firestore users collection (<your-gcp-project>)",
+  "auth": {
+    "type": "service_account",
+    "credentials_file": "analytics/credentials/<your-gcp-project>-firebase-adminsdk-<suffix>.json",
+    "scopes": ["https://www.googleapis.com/auth/datastore"]
+  },
+  "request": {
+    "url": "https://firestore.googleapis.com/v1/projects/<your-gcp-project>/databases/(default)/documents:runAggregationQuery",
+    "method": "POST",
+    "body": {
+      "structuredAggregationQuery": {
+        "aggregations": [{"alias": "count", "count": {}}],
+        "structuredQuery": {
+          "from": [{"collectionId": "users"}]
+        }
+      }
+    }
+  },
+  "extract": {
+    "type": "jsonpath",
+    "path": "0.result.aggregateFields.count.integerValue",
+    "cast": "int",
+    "default_value": 0
+  },
+  "validate": { "min": 0, "max": 1000000 }
+}

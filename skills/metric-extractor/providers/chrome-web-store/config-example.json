@@ -1,0 +1,18 @@
+{
+  "name": "cws_users",
+  "description": "Chrome Web Store user count for <your-extension-name> (public listing page — no auth needed)",
+  "auth": {
+    "domain": null
+  },
+  "request": {
+    "url": "https://chromewebstore.google.com/detail/<your-extension-slug>/<your-extension-id>",
+    "method": "GET"
+  },
+  "extract": {
+    "type": "regex",
+    "pattern": ">(\\d[\\d,]*) users</div>",
+    "group": 1,
+    "cast": "int"
+  },
+  "validate": { "min": 0, "max": 1000000 }
+}

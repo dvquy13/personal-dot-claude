@@ -1,0 +1,22 @@
+{
+  "dimensionHeaders": [],
+  "metricHeaders": [
+    {
+      "name": "totalUsers",
+      "type": "TYPE_INTEGER"
+    }
+  ],
+  "rows": [
+    {
+      "dimensionValues": [],
+      "metricValues": [
+        {
+          "value": "99"
+        }
+      ]
+    }
+  ],
+  "rowCount": 1,
+  "metadata": {},
+  "kind": "analyticsData#runReport"
+}
