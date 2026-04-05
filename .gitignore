@@ -8,5 +8,6 @@
 !commands/**
 !skills/
 !skills/**
+skills/metric-extractor/
 !scripts/
 !scripts/**
