@@ -23,6 +23,8 @@
 - Hype punctuation ("This CHANGED Everything!!!")
 - Engagement bait ("Comment YES if you agree")
 - Vague opening that doesn't hook immediately
+- Generic CTAs ("Feel free to check it out and let me know your thoughts!" / "Links in the comments!")
+- The standard launch post formula: problem setup → tool description → key feature → CTA. Reads as a template, not a person. DvQ prefers casual and personal — fewer words, more direct, sounds like something you'd actually say to a colleague.
 
 ## Structure Template
 

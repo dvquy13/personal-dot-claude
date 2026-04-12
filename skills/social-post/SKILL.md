@@ -108,17 +108,17 @@ Never invent facts, product names, statistics, or quotes.
 Character count: [N]
 ```
 
-### Twitter / X
+### X (formerly Twitter)
 ```
---- TWITTER THREAD ---
+--- X THREAD ---
 
-Tweet 1/N ([char count]/280):
+Post 1/N ([char count]/280):
 [text]
 
-Tweet 2/N ([char count]/280):
+Post 2/N ([char count]/280):
 [text]
 
-Tweet N/N ([char count]/280):
+Post N/N ([char count]/280):
 [text]
 ```
 
@@ -160,5 +160,21 @@ Do not use:
 - Generic advice that any AI could generate
 - Invented facts or statistics
 - Hedges that distance the author from their own experience ("One might argue...")
+- Generic CTAs ("Feel free to check it out and let me know your thoughts!")
+- The standard promotional formula: problem setup → tool description → key feature → CTA. This reads as a template, not a person.
 
 Mirror the tone of the source material. Candid and technical source → candid and technical post.
+
+## DvQ Preferences
+
+These apply by default unless the user says otherwise:
+
+**Blog traffic goal**: DvQ has a personal blog and wants social posts to drive traffic there. For Dev.to, default to a short teaser (~250 words) + CTA link, not a full republication. Ask about this goal if unclear.
+
+**Demo videos**: Do not include demo videos in social posts by default. Videos are a reward for clicking through to the blog, not a lure. Only include if the user explicitly asks.
+
+**LinkedIn tone**: DvQ's LinkedIn audience is professional but the preferred tone is casual and personal — more "here's something I built" than "here's the problem I solved and the solution I engineered." Avoid the standard launch post formula. When in doubt, write fewer words, not more.
+
+**HN optional caveat**: Do not include the "honest caveat" in the HN first comment by default. It undersells the tool before anyone has tried it. Only include if the user specifically wants to lead with a known limitation.
+
+**X (formerly Twitter)**: Use `utm_source=x` (not `twitter`) in UTM links. Name output files `_x.md`. Use "Post" not "Tweet" in thread labels.

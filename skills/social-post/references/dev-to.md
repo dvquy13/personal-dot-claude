@@ -37,12 +37,17 @@ cover_image: [URL or leave blank to prompt user to upload]
 
 ## Adapting a Blog Post for Dev.to
 
-When republishing an existing blog post:
+**First: ask about the goal.** Full republication maximizes Dev.to engagement (readers stay on-platform). A teaser drives traffic to the original blog. These are different strategies — don't assume.
+
+- **Blog traffic goal** → write a short teaser (~250 words): problem + what you built + one key insight + explicit CTA link to the blog. Set `canonical_url` in frontmatter.
+- **Dev.to engagement goal** → full republication with expanded technical sections (see below).
+
+When doing a full republication:
 
 1. **Keep the original structure** but expand technical sections with more implementation detail
 2. **Add a Dev.to-specific intro** (1 paragraph) that addresses the Dev.to developer audience directly
 3. **Convert any Quarto-specific syntax** (callouts, footnotes) to plain Markdown
-4. **Add code snippets** if the original post references code without showing it
+4. **Add code snippets** if the original post references code without showing it — only include code you can verify is accurate; don't invent CLI commands or API details
 5. **Canonical URL**: Add `canonical_url: [original blog URL]` to frontmatter so search engines attribute the original
 6. **Cross-post note** at the bottom: "Originally published at [your blog]" is expected and accepted
 
