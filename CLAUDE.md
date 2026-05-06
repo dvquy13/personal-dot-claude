@@ -1,3 +1,7 @@
+## Personal Knowledge
+
+My Obsidian vault is at /Users/dvq/Docs/main.
+
 ## Workflow Orchestration
 
 ### 1. Plan Mode Default
