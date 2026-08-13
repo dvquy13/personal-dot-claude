@@ -36,8 +36,8 @@ else BAR_COLOR="$GREEN"; fi
 BAR_WIDTH=12
 FILLED=$((PCT * BAR_WIDTH / 100)); EMPTY=$((BAR_WIDTH - FILLED))
 BAR=""
-for ((i=0; i<FILLED; i++)); do BAR+="━"; done
-for ((i=0; i<EMPTY; i++)); do BAR+="╌"; done
+for ((i=0; i<FILLED; i++)); do BAR+="▰"; done
+for ((i=0; i<EMPTY; i++)); do BAR+="▱"; done
 
 COST_FMT=$(printf '$%.2f' "$COST")
 
@@ -85,8 +85,8 @@ color_pct() {
 build_mini_bar() {
     local pct=$1
     local filled=$((pct * 4 / 100)) empty=$((4 - pct * 4 / 100)) bar=""
-    for ((i=0; i<filled; i++)); do bar+="━"; done
-    for ((i=0; i<empty; i++)); do bar+="╌"; done
+    for ((i=0; i<filled; i++)); do bar+="▰"; done
+    for ((i=0; i<empty; i++)); do bar+="▱"; done
     if [ "$pct" -ge 85 ]; then printf "${RED}%s${RESET}" "$bar"
     elif [ "$pct" -ge 60 ]; then printf "${YELLOW}%s${RESET}" "$bar"
     else printf "%s" "$bar"; fi
