@@ -2,7 +2,16 @@
 
 My Obsidian vault is at /Users/dvq/Docs/main.
 
+## Writing conventions
+
+Please refrain from using extensive emdashes. Where it makes sense to, use emdashes without enclosing spaces. Bad example: " — ", good one: "—".
+
+Please avoid using antithesis like "X, but not Y" exceedingly. Only use when you truly need to.
+
 ## Workflow Orchestration
+
+### About plan file
+When creating plan file, please make sure you include a Tracker section on top that includes a summary of the logical steps the plan demands execution. This acts as a concise and visible progress update for that task.
 
 ### 1. Plan Mode Default
 - Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
@@ -41,6 +50,3 @@ My Obsidian vault is at /Users/dvq/Docs/main.
 - **Simplicity First**: Make every change as simple as possible. Impact minimal code.
 - **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
 - **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
-
-## Writing conventions
-I don't use emdash with enclosing spaces.

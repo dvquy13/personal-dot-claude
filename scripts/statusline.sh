@@ -158,3 +158,7 @@ printf "Ctx ${BAR_COLOR}%s${RESET} ${BAR_COLOR}%4d%%${RESET} · ${YELLOW}%s${RES
 if [ -n "$RATE_PARTS" ]; then
     printf "%b\n" "$RATE_PARTS"
 fi
+
+# Line 4: prompt cache status (hidden when no caching observed)
+CACHE_LINE=$(printf '%s' "$input" | python3 "$(dirname "$0")/statusline-cache.py")
+[ -n "$CACHE_LINE" ] && printf "%b\n" "$CACHE_LINE"
