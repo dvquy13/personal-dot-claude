@@ -2,6 +2,7 @@
 input=$(cat)
 
 MODEL=$(echo "$input" | jq -r '.model.display_name')
+EFFORT=$(echo "$input" | jq -r '.effort.level // empty')
 DIR=$(echo "$input" | jq -r '.workspace.current_dir')
 COST=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
 PCT=$(echo "$input" | jq -r '.context_window.used_percentage // 0' | cut -d. -f1)
@@ -26,7 +27,9 @@ if git rev-parse --git-dir > /dev/null 2>&1; then
         BRANCH=" · 🌿 ${BRANCH_NAME}${GIT_PARTS:+ $GIT_PARTS}"
     fi
 fi
-printf "${CYAN}[%s]${RESET} 📁 %s%b\n" "$MODEL" "${DIR##*/}" "$BRANCH"
+EFFORT_PART=""
+[ -n "$EFFORT" ] && EFFORT_PART="${RESET}${DIM} · ${RESET}${CYAN}${EFFORT}"
+printf "${CYAN}[%s%b]${RESET} 📁 %s%b\n" "$MODEL" "$EFFORT_PART" "${DIR##*/}" "$BRANCH"
 
 # Line 2: color-coded progress bar, context %, cost, rate limits with resets_at
 if [ "$PCT" -ge 70 ]; then BAR_COLOR="$RED"
