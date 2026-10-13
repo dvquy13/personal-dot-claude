@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Prompt cache status line segment. Reads status line JSON from stdin."""
-import json, os, sys, time
+import json, os, re, sys, time
 
 G, Y, R, D, X = "\033[32m", "\033[33m", "\033[31m", "\033[2m", "\033[0m"
 BAR_WIDTH = 10
@@ -20,19 +20,32 @@ def ttl_seconds(ttl):
     return {"5m": 300, "1h": 3600}.get(ttl)
 
 
-# Base input $/1M tokens (public pricing). Cache write = 1.25x (5m) or 2x (1h).
-INPUT_PRICE = {
-    "fable": 10.0, "opus-5-5": 4.0, "opus": 5.0,
-    "sonnet-5": 2.0, "sonnet": 3.0, "haiku": 1.0,
-}
+# Base input $/1M tokens, from platform.claude.com/docs/en/about-claude/pricing (checked 2026-10-13).
+# Cache write = 1.25x (5m) or 2x (1h). First matching pattern wins; unlisted models get no estimate.
+# (model id regex, $/1M, $/1M when prompt is over 100k tokens or None)
+INPUT_PRICE = [
+    (r"fable", 10.0, None),
+    (r"opus-5-5", 4.0, None),
+    (r"opus-4(-[01])?(?!-[5-9])", 15.0, None),  # Opus 4 and 4.1; Opus 4.5+ fall through to $5
+    (r"opus-5(?!-5)", 5.0, None),  # Opus 5
+    (r"opus-4-[5-8]", 5.0, None),  # Opus 4.5 to 4.8
+    (r"sonnet-5", 2.0, None),
+    (r"sonnet-4", 3.0, None),
+    (r"haiku-5-5", 0.10, 0.50),
+    (r"haiku-4-5", 1.0, None),
+    (r"haiku-3-5", 0.80, None),
+]
 WRITE_MULT = {"5m": 1.25, "1h": 2.0}
 
 
 def recache_cost(model_id, ttl, tokens):
     mid = (model_id or "").lower()
-    price = next((p for k, p in INPUT_PRICE.items() if k in mid), None)
-    if price is None:
+    rule = next((r for r in INPUT_PRICE if re.search(r[0], mid)), None)
+    if rule is None:
         return None
+    _, price, long_price = rule
+    if long_price is not None and tokens > 100_000:
+        price = long_price
     return tokens / 1e6 * price * WRITE_MULT.get(ttl, 1.25)
 
 
