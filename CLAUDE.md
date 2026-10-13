@@ -25,9 +25,10 @@ When creating plan file, please make sure you include a Tracker section on top t
 
 ### 3. Subagent Strategy
 - Use subagents liberally to keep main context window clean
-- Offload research, exploration, and parallel analysis to subagents
-- For complex problems, throw more compute at it via subagents
-- One task per subagent for focused execution
+- Offload output-heavy tasks including but not limited to implementation, research, exploration, and parallel analysis to subagents
+- Use Haiku by default for subagents
+- One task per subagent for focused execution. Try to keep the context of subagents less than 100K tokens.
+- A PreToolUse hook (`scripts/subagent-ask-when-unsure.sh`) tells every subagent to stop and return a `QUESTIONS FOR LEAD:` section when in doubt. When a result has one, answer it yourself if the context allows (ask the user only if it is genuinely their call), then resume that same agent via SendMessage instead of spawning a new one.
 
 ### 4. Verification Before Done
 - Never mark a task complete without proving it works
@@ -46,6 +47,7 @@ When creating plan file, please make sure you include a Tracker section on top t
 - No error hiding or fallback mechanisms that mask issues
 - All errors must be properly displayed to the user
 - Errors must be clear, actionable, and honest
+
 ## Core Principles
 - **Simplicity First**: Make every change as simple as possible. Impact minimal code.
 - **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
