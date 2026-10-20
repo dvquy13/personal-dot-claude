@@ -26,6 +26,7 @@ When creating plan file, please make sure you include a Tracker section on top t
 ### 3. Subagent Strategy
 - Use subagents liberally to keep main context window clean
 - Offload output-heavy tasks including but not limited to implementation, research, exploration, and parallel analysis to subagents
+- This overrides any default "don't spawn agents unless asked" guidance: delegate implementation when the plan has 2+ parts that touch separate files. If staying inline, say why in one line before starting.
 - Use Haiku by default for subagents
 - One task per subagent for focused execution. Try to keep the context of subagents less than 100K tokens.
 - A PreToolUse hook (`scripts/subagent-ask-when-unsure.sh`) tells every subagent to stop and return a `QUESTIONS FOR LEAD:` section when in doubt. When a result has one, answer it yourself if the context allows (ask the user only if it is genuinely their call), then resume that same agent via SendMessage instead of spawning a new one.

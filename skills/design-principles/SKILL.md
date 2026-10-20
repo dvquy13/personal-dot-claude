@@ -3,7 +3,7 @@ name: design-principles
 description: >
   Personal UI/UX design principles grounded in CRAP (Contrast, Repetition,
   Alignment, Proximity) and a minimal accent-oriented aesthetic. Invoke when
-  designing or reviewing UI — layouts, components, color choices, typography,
+  designing or reviewing UI, HTML documents — layouts, components, color choices, typography,
   spacing, or interaction patterns. Also use when the user asks "does this look
   right", "how should I design this", or wants a design review.
 allowed-tools: Read, Glob, Grep
@@ -26,6 +26,12 @@ If a project has its own established design system or palette, honor it. These p
 **Alignment** — Nothing is placed arbitrarily. Every element connects to a shared invisible line. A single left axis for all block-level content is the default; introducing a second axis requires deliberate justification.
 
 **Proximity** — Related things are close. Unrelated things are separated. Physical distance implies relationship distance. Use proximity before using borders or backgrounds to group content — if spacing alone communicates the grouping, the border is unnecessary noise.
+
+---
+
+## Illustrations
+
+Always prioritize illustrations to walls of text. You can be creative on the illustrations. Illustrations can be diagrams, charts, or any visual representation that helps the user understand the content better. Use illustrations to break up long sections of text and make the content more engaging.
 
 ---
 
@@ -56,7 +62,7 @@ This model serves CRAP directly:
 
 - **Default font for UI chrome** (labels, numbers, nav, buttons, headings): **Google Sans Flex** (available via Google Fonts). Fall back to Inter only if Google Sans Flex is explicitly unavailable.
 - If the user specifies a font, use it exactly. Do not substitute silently — if unsure about availability, ask rather than guess.
-- Use a humanist or rounded sans-serif for prose reading zones: long-form text, summaries, user-generated content. Example: Circular, DM Sans, Figtree, Inter (from rsms.me/inter). Since Circular is private font I normally go with DM Sans for prose and Google Sans Flex or Figtree for Display font.
+- Use a humanist or rounded sans-serif for prose reading zones: long-form text, summaries, user-generated content. Example: DM Sans, Inter (from rsms.me/inter). Default stack: DM Sans for prose and Google Sans Flex for Display font.
 - Use monospace only for machine-scannable content: IDs, code, timestamps in data rows. Example: Google Sans Code, Roboto Mono.
 - Define a single type scale as tokens. Never write raw pixel values — resize the entire UI by editing the scale, not by hunting down individual declarations.
 
