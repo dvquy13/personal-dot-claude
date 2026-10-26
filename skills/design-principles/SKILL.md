@@ -37,7 +37,7 @@ Always prioritize illustrations to walls of text. You can be creative on the ill
 
 ## Color
 
-Default palette: black, white, and one accent color. This is the starting point for every project that doesn't bring its own palette.
+Default palette: black, white, and one accent color (default: blue #0062a8). This is the starting point for every project that doesn't bring its own palette.
 
 - Resist adding a second accent. Most problems that feel like they need a new color are solved by weight, spacing, or opacity instead.
 - Semantic colors (green for success, red for error, amber for warning) are status indicators only — never decoration.
