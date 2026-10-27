@@ -18,7 +18,7 @@ Where each kind of doc lives, the rules for writing them, and the status of ever
 | As-built architecture | `docs/architecture.md` | describes only what exists in code |
 | Decisions | `docs/decisions/{NNNN}-{slug}.md` | one decision per file, append-only |
 | Specs (one milestone, testable) | `docs/specs/{milestone}-{slug}.md` | |
-| Plans (task order) | `docs/plans/{milestone}-{slug}.md` | Tracker section at the top. Keep after the milestone, with `status: done` |
+| Plans (task order) | `docs/plans/{milestone}-{slug}.md` | Tracker section at the top. Open milestones only: distilled, then deleted at close-out |
 | Terms | `docs/glossary.md` | |
 | Diagrams | `docs/assets/{name}.svg` | standalone SVG, see Diagrams |
 | Spike findings <!-- keep only if the project has it --> | `docs/spikes/{id}-{slug}.md` | question, method, numbers, verdict |

@@ -22,7 +22,7 @@ Use when creating or restructuring the project's root `CLAUDE.md`. Keep the whol
 | Why was this decided? | `docs/decisions/` (index in its `README.md`) |
 | What does a term mean? | `docs/glossary.md`. Use these terms exactly in code and docs. |
 | What does milestone N build, and how is it verified? | `docs/specs/` |
-| What's the task order and progress? | `docs/plans/` (Tracker at the top of each plan) |
+| What's the task order and progress? | `docs/plans/` (Tracker at the top of each plan; open milestones only) |
 | Map of all docs with status | `docs/README.md` |
 
 ## Docs workflow

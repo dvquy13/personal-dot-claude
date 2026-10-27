@@ -101,10 +101,11 @@ Only proceed to Phase 4 with the deduplicated plan.
 
 When a milestone's plan is finished, also:
 
-1. **Keep the plan and spec.** Set both to `status: done` and bump `updated`. Never delete them: later docs, code comments and test names cite their requirement IDs, and the spec's results are the acceptance record.
+1. **Keep the spec, set to `status: done`.** Later docs, code comments and test names cite its requirement IDs, and its results are the acceptance record.
 2. **Results go in the spec**: each acceptance check's outcome and evidence path, plus a "What differed from the spec" list.
 3. **Each difference goes to its home:** a change of intent goes into the design doc (bump `version` if the project versions it), a choice with rationale becomes a new decision record, and what got built goes into `architecture.md`.
-4. **Status:** update the status table, and the status line in `CLAUDE.md` (what's done, with date, and what's next).
+4. **Distill the plan, then delete it.** A finished plan's job (task order, contracts between tasks) is over, nobody maintains it, so it drifts from the code and misleads whoever greps the docs later. Move what only it holds to its home first: a decision it settled to the spec's Decisions or a decision record, a reusable way of working to `docs/README.md`, what got built to `architecture.md`. Repoint every link to it, and strip plan task IDs (`T3`, `W0`) from code comments, since they restart in each plan. Git keeps its history.
+5. **Status:** update the status table, and the status line in `CLAUDE.md` (what's done, with date, and what's next).
 
 ## Placement Scope
 
@@ -120,7 +121,7 @@ Route each finding based on **what kind of knowledge it is** and **when it needs
 
 **Decision record** (`docs/decisions/NNNN-{slug}.md`) — one choice with its context, consequences and rejected alternatives. Append-only. Undecided questions go in the decisions index under "Deferred".
 
-**Spec / plan** — one milestone's testable requirements and results / its task order with a Tracker on top.
+**Spec / plan** — one milestone's testable requirements and results (kept) / its task order with a Tracker on top (open milestones only).
 
 **Glossary** — a term the project uses with a specific meaning. Add it before using it.
 
@@ -138,7 +139,7 @@ Route each finding based on **what kind of knowledge it is** and **when it needs
 - **Verified only**: only document what was verified or completed this session. Skip future plans, proposed designs, or approaches not yet taken.
 - **Non-obvious only**: skip anything self-evident from reading the code or README. Every entry should answer "why" or "gotcha", not "what".
 - **One place only**: each fact lives in exactly one target, and other targets link to it. If it fits as a code comment, don't also add it to CLAUDE.md.
-- **Never delete finished plans or specs**: close them out instead.
+- **Never delete a finished spec**: close it out. A finished plan is distilled, then deleted (see Milestone close-out).
 - **Don't default to KEEP**: housekeeping's job is to remove and merge, not just add — an unverifiable claim sitting in CLAUDE.md costs attention at every session start, more than no claim at all. When genuinely unsure whether something is stale, say so in the plan and let the user decide.
 
 ## Splitting
