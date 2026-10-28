@@ -30,6 +30,8 @@ agent-browser close               # when the task is done
 
 Act on `@eN` refs from the latest snapshot, not CSS guesses.
 
+Screenshots: viewport only (scroll the target into view first). `--full` on long pages produces huge images (5000×10000 px) that cost a lot of context, and sticky headers can still cover fields. To check form values, `eval` the input values instead of reading them off a screenshot.
+
 ## Login / captcha handoff
 
 When a page needs a login, 2FA, captcha, or consent the agent shouldn't handle:
@@ -49,9 +51,27 @@ env -u AGENT_BROWSER_PROFILE AGENT_BROWSER_SESSION=<task> agent-browser snapshot
 
 State files hold session tokens in plaintext; never commit or share them.
 
+## Which browser
+
+- Agent profile (default): research, reading, public pages.
+- User's real Chrome: bookings, forms that submit under the user's identity, anything behind their login, and sites with bot checks (reCAPTCHA, Cloudflare). Start there for these instead of discovering the captcha first. Still confirm with the user before the final submit.
+
 ## User's real Chrome
 
-Only when the user asks to use their own browser/tabs: `agent-browser --auto-connect <cmd>` (Chrome remote debugging is enabled; Chrome shows an Allow prompt the first time).
+Remote debugging is on via chrome://inspect (port 9222). `--auto-connect` does NOT work with that mode: it looks for a `DevToolsActivePort` file that this mode never writes, and fails with "No running Chrome instance found". Use `--cdp 9222`, which works from inside the sandbox:
+
+```bash
+agent-browser --cdp 9222 tab list                 # check the connection
+agent-browser --cdp 9222 tab new <url>            # work in a new tab, never the user's existing ones
+agent-browser --cdp 9222 read                     # then the usual commands, each with --cdp 9222
+agent-browser --cdp 9222 tab close                # when done
+```
+
+- Before the first connect in a session, tell the user Chrome will show an "Allow remote debugging?" prompt to click. Until they do, commands hang until they time out.
+- If a command reports `tab_gone`, run `tab new <url>` again.
+- Don't diagnose with `lsof` inside the sandbox: it hides listening ports. `tab list` is the real check.
+- Wrap the prefix in a shell function (`ab(){ agent-browser --cdp 9222 "$@"; }`). A `$B` variable doesn't word-split in zsh.
+- `snapshot -i` can come back empty in the user's Chrome. If so, use `read` for text and targeted `eval` DOM queries (find elements by text, then `.click()`); use `fill`/`select` with CSS selectors for inputs.
 
 ## Research tasks
 
@@ -59,4 +79,4 @@ Thin sourcing is the known failure mode: don't stop after 2–3 retailer pages. 
 
 ## Cleanup
 
-Headed sessions never idle out. Run `agent-browser close` at the end of the task unless the user wants the window kept open (e.g. mid-login). `agent-browser close --all` clears stray sessions.
+Headed sessions never idle out. Run `agent-browser close` at the end of the task unless the user wants the window kept open (e.g. mid-login). `agent-browser close --all` clears stray sessions. In the user's real Chrome, don't run `close` (untested whether it only detaches or closes their browser); close only the tabs you opened with `tab close`.
